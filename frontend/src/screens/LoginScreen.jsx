@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Form, Row, Col, Container, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -58,7 +58,10 @@ function LoginScreen() {
           </Button>
           <p>
             Don't have an account?{" "}
-            <Link to="/" className="text-primary">
+            <Link
+              to={redirect ? `/register?redirect=${redirect}` : "/register"}
+              className="text-primary"
+            >
               Register
             </Link>
           </p>

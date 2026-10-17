@@ -49,8 +49,27 @@ def register_user(request):
             password=make_password(data['password'])
         
         )
-        serializer = UserSerializer(user, many=False)
+        serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
     except:
         details = {'message':'Authorization error'}
         return Response(details, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["PUT"])
+def updateProfile(request):
+    user = request.user
+    data = request.data
+
+    user.first_name = data["name"]
+    user.username = data["email"]
+    user.email = data["email"]
+
+    password = data.get("password", "")
+    if password and password.strip():
+        user.password = make_password(data["password"])
+
+    user.save()
+    serializer = UserSerializerWithToken(user, many=False)
+
+    return Response(serializer.data)

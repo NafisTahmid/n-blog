@@ -33,8 +33,8 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             {userInfo ? (
-              <NavDropdown title={userInfo.username} id="basic-nav-dropdown">
-                <NavDropdown.Item href="">Profile</NavDropdown.Item>
+              <NavDropdown title={userInfo.name} id="dropdown">
+                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={logoutHandler}>
                   Logout
