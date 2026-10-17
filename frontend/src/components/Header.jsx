@@ -2,10 +2,20 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { Button } from "react-bootstrap";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../actions/userActions";
 
 function Header() {
+  const dispatch = useDispatch();
+  const loginUser = useSelector((state) => state.userLogin);
+  const { userInfo } = loginUser;
+
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
   return (
     <Navbar
       expand="lg"
@@ -22,12 +32,21 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <LinkContainer to="/blogs">
-              <Nav.Link>
-                <i className="fa-brands fa-pied-piper-hat"></i> Become a
-                Member!!!
-              </Nav.Link>
-            </LinkContainer>
+            {userInfo ? (
+              <NavDropdown title={userInfo.username} id="basic-nav-dropdown">
+                <NavDropdown.Item href="">Profile</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={logoutHandler}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <LinkContainer to="/login">
+                <Nav.Link>
+                  <i className="fa-brands fa-pied-piper-hat"></i>Login
+                </Nav.Link>
+              </LinkContainer>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
