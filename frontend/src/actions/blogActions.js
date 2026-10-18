@@ -6,6 +6,9 @@ import {
   BLOG_DETAILS_REQUEST,
   BLOG_DETAILS_SUCCESS,
   BLOG_DETAILS_FAIL,
+  BLOG_COMMENT_REQUEST,
+  BLOG_COMMENT_SUCCESS,
+  BLOG_COMMENT_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListAction = () => async (dispatch) => {
@@ -42,6 +45,41 @@ export const blogDetailsAction = (slug) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: BLOG_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const postComment = (slug, comment) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: BLOG_COMMENT_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const response = await axios.post(
+      `/api/blogs/${slug}/post-comment/`,
+      { comment: comment },
+      config,
+    );
+    dispatch({
+      type: BLOG_COMMENT_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BLOG_COMMENT_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

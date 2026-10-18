@@ -1,4 +1,4 @@
-from .models import Blog
+from .models import Blog, Comment
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -34,3 +34,8 @@ class UserSerializerWithToken(UserSerializer):
     def get_token(self, obj):
         refresh = RefreshToken.for_user(obj)
         return str(refresh.access_token)
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"

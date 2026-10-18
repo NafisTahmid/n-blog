@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from base.serializers import BlogSerializer
-from base.models import Blog
+from base.serializers import BlogSerializer, CommentSerializer
+from base.models import Blog, Comment
 from rest_framework import status
 
 @api_view(['GET'])
@@ -17,4 +17,18 @@ def getBlogs(request):
 def getBlog(request, slug):
     blog = Blog.objects.get(slug=slug)
     serializer = BlogSerializer(blog, many=False)
+    return Response(serializer.data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def postComment(request, slug):
+    user = request.user
+    data = request.data
+    blog = Blog.objects.get(slug=slug)
+    newComment = Comment.objects.create(
+        blog=blog,
+        comment=data["comment"],
+        user=user
+    )
+    serializer = CommentSerializer(newComment, many=False)
     return Response(serializer.data)
