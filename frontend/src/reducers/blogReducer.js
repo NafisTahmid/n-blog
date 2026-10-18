@@ -9,6 +9,9 @@ import {
   BLOG_COMMENT_SUCCESS,
   BLOG_COMMENT_FAIL,
   BLOG_COMMENT_RESET,
+  COMMENT_GET_REQUEST,
+  COMMENT_GET_SUCCESS,
+  COMMENT_GET_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListReducer = (state = { blogs: [] }, action) => {
@@ -51,6 +54,19 @@ export const postBlogCommentReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case BLOG_COMMENT_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const getBlogCommentsReducer = (state = { comments: [] }, action) => {
+  switch (action.type) {
+    case COMMENT_GET_REQUEST:
+      return { loading: true, ...state };
+    case COMMENT_GET_SUCCESS:
+      return { loading: false, comments: action.payload };
+    case COMMENT_GET_FAIL:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

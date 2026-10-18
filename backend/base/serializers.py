@@ -36,6 +36,12 @@ class UserSerializerWithToken(UserSerializer):
         return str(refresh.access_token)
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Comment
         fields = "__all__"
+
+    def get_user(self, obj):
+        item = obj.user
+        serializer = UserSerializer(item, many=False)
+        return serializer.data

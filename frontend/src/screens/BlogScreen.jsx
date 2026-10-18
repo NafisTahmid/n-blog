@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Button, Container, Image, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Form from "react-bootstrap/Form";
-import { blogDetailsAction, postComment } from "../actions/blogActions";
+import {
+  blogDetailsAction,
+  postComment,
+  getComments,
+} from "../actions/blogActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link, useLocation } from "react-router-dom";
@@ -22,6 +26,12 @@ function BlogScreen() {
     loading: loadingComment,
     success: successComment,
   } = commentBlogPost;
+  const commentsBlogGet = useSelector((state) => state.getBlogComments);
+  const {
+    error: errorGetComments,
+    comments: commentsGetComments,
+    loading: loadingGetComments,
+  } = commentsBlogGet;
   const { slug } = useParams();
   const location = useLocation();
   const redirect = location.search
@@ -33,19 +43,17 @@ function BlogScreen() {
     dispatch(postComment(slug, comment));
   };
 
-  // useEffect(() => {
-  //   dispatch(blogDetailsAction(slug));
-  //   if (successComment) {
-  //     setComment("");
-  //   }
-  // }, [dispatch, slug, successComment]);
   useEffect(() => {
     dispatch(blogDetailsAction(slug));
+    if (userInfo) {
+      dispatch(getComments(slug));
+    }
   }, [dispatch, slug]);
 
   useEffect(() => {
     if (successComment) {
       setComment("");
+      dispatch(getComments(slug));
       dispatch(blogDetailsAction(slug));
       dispatch({ type: BLOG_COMMENT_RESET });
     }
@@ -118,6 +126,20 @@ function BlogScreen() {
               </Col>
               <Col md={6} sm={12} lg={6} xl={6}>
                 <h3>Other comments:</h3>
+                {loadingGetComments ? (
+                  <Loader />
+                ) : errorGetComments ? (
+                  <Message variant="danger">{errorGetComments}</Message>
+                ) : (
+                  commentsGetComments.map((comment) => (
+                    <div>
+                      <h6>
+                        <strong>{comment.user.name}</strong>
+                      </h6>
+                      <p>{comment.comment}</p>
+                    </div>
+                  ))
+                )}
               </Col>
             </Row>
           </Row>

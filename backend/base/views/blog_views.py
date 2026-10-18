@@ -32,3 +32,12 @@ def postComment(request, slug):
     )
     serializer = CommentSerializer(newComment, many=False)
     return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getBlogComments(request, slug):
+    user = request.user
+    blog = Blog.objects.get(slug=slug)
+    blog_comments = Comment.objects.filter(blog=blog)
+    serializer = CommentSerializer(blog_comments, many=True)
+    return Response(serializer.data)
