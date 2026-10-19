@@ -6,6 +6,8 @@ import {
   blogDetailsReducer,
   postBlogCommentReducer,
   getBlogCommentsReducer,
+  addLikeReducer,
+  getBlogLikesReducer,
 } from "./reducers/blogReducer";
 import {
   userLoginReducer,
@@ -23,6 +25,8 @@ const reducer = combineReducers({
   userUpdateProfile: userUpdateProfileReducer,
   postBlogComment: postBlogCommentReducer,
   getBlogComments: getBlogCommentsReducer,
+  addLike: addLikeReducer,
+  getBlogLikes: getBlogLikesReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

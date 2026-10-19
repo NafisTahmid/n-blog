@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from base.serializers import BlogSerializer, CommentSerializer
-from base.models import Blog, Comment
+from base.serializers import BlogSerializer, CommentSerializer, LikeSerializer
+from base.models import Blog, Comment, Like
 from rest_framework import status
 
 @api_view(['GET'])
@@ -33,6 +33,25 @@ def postComment(request, slug):
     serializer = CommentSerializer(newComment, many=False)
     return Response(serializer.data)
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def addLike(request, slug):
+    user = request.user
+    try:
+        blog = Blog.objects.get(slug=slug)
+    except Blog.DoesNotExist:
+        return Response({"message":"Blog doesn't exist!!!"}, status=status.HTTP_404_NOT_FOUND)
+    like, created = Like.objects.get_or_create(
+        blog=blog,
+        user=user
+    )
+    if created:
+        serializer = LikeSerializer(like, many=False)
+        return Response(serializer.data)
+    like.delete()
+    return Response({"message":"Like removed successfully!!!"}, status=status.HTTP_200_OK)
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def getBlogComments(request, slug):
@@ -40,4 +59,12 @@ def getBlogComments(request, slug):
     blog = Blog.objects.get(slug=slug)
     blog_comments = Comment.objects.filter(blog=blog)
     serializer = CommentSerializer(blog_comments, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getBlogLikes(request, slug):
+    user = request.user
+    blog = Blog.objects.get(slug=slug)
+    blog_likes = Like.objects.filter(blog=blog)
+    serializer = LikeSerializer(blog_likes, many=True)
     return Response(serializer.data)

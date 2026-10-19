@@ -7,11 +7,16 @@ import {
   blogDetailsAction,
   postComment,
   getComments,
+  addOrRemoveLike,
+  getLikes,
 } from "../actions/blogActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link, useLocation } from "react-router-dom";
-import { BLOG_COMMENT_RESET } from "../constants/blogConstants";
+import {
+  BLOG_COMMENT_RESET,
+  BLOG_LIKE_RESET,
+} from "../constants/blogConstants";
 function BlogScreen() {
   const [comment, setComment] = useState("");
   const dispatch = useDispatch();
@@ -32,6 +37,19 @@ function BlogScreen() {
     comments: commentsGetComments,
     loading: loadingGetComments,
   } = commentsBlogGet;
+  const likeAdd = useSelector((state) => state.addLike);
+  const {
+    error: errorAddLike,
+    loading: loadingAddLike,
+    success: successAddLike,
+  } = likeAdd;
+
+  const likesBlogGet = useSelector((state) => state.getBlogLikes);
+  const {
+    error: errorGetLikes,
+    likes: likesLikes,
+    loading: loadingLikes,
+  } = likesBlogGet;
   const { slug } = useParams();
   const location = useLocation();
   const redirect = location.search
@@ -43,12 +61,17 @@ function BlogScreen() {
     dispatch(postComment(slug, comment));
   };
 
+  const likeHandler = () => {
+    dispatch(addOrRemoveLike(slug));
+  };
+
   useEffect(() => {
     dispatch(blogDetailsAction(slug));
+    dispatch(getLikes(slug));
     if (userInfo) {
       dispatch(getComments(slug));
     }
-  }, [dispatch, slug]);
+  }, [dispatch, slug, userInfo]);
 
   useEffect(() => {
     if (successComment) {
@@ -57,7 +80,12 @@ function BlogScreen() {
       dispatch(blogDetailsAction(slug));
       dispatch({ type: BLOG_COMMENT_RESET });
     }
-  }, [dispatch, slug, successComment]);
+    if (successAddLike) {
+      dispatch(blogDetailsAction(slug));
+      dispatch(getLikes(slug));
+      dispatch({ type: BLOG_LIKE_RESET });
+    }
+  }, [dispatch, slug, successAddLike, successComment]);
 
   return (
     <div>
@@ -76,7 +104,43 @@ function BlogScreen() {
                 alt={blog.blog_title}
               />
 
-              {/* <p className="text-center">{blog.blog_content}</p> */}
+              {userInfo ? (
+                loadingAddLike ? (
+                  <Loader />
+                ) : errorAddLike ? (
+                  <Message variant="danger">{errorAddLike}</Message>
+                ) : (
+                  <Row className="align-items-center g-0">
+                    <Col xs="auto">
+                      <Button variant="light" onClick={likeHandler}>
+                        <i
+                          className="fa-solid fa-thumbs-up"
+                          style={{
+                            fontSize: "40px",
+                            color: "blue",
+                          }}
+                        ></i>
+                      </Button>
+                    </Col>
+
+                    <Col xs="auto">
+                      <p className="mb-0 ms-2">{likesLikes?.length ?? 0}</p>
+                    </Col>
+                  </Row>
+                )
+              ) : (
+                <p className="text-start">
+                  <i
+                    className="fa-solid fa-thumbs-up"
+                    style={{
+                      fontSize: "50px",
+                      color: "blue",
+                    }}
+                  ></i>
+                  <span className="ms-2">{likesLikes?.length ?? 0}</span>
+                </p>
+              )}
+
               {userInfo ? (
                 <p className="text-center">{blog.blog_content}</p>
               ) : (
@@ -100,6 +164,13 @@ function BlogScreen() {
                   ) : (
                     <Message>{errorComment}</Message>
                   )
+                ) : !userInfo ? (
+                  <Message variant="info">
+                    Please log in to write a comment.{" "}
+                    <Link to={`/login?redirect=${redirect}`}>
+                      Login here!!!
+                    </Link>
+                  </Message>
                 ) : (
                   <Form onSubmit={submitComment}>
                     <Form.Group as={Col} className="" controlId="commentText">

@@ -1,4 +1,4 @@
-from .models import Blog, Comment
+from .models import Blog, Comment, Like
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -39,6 +39,17 @@ class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Comment
+        fields = "__all__"
+
+    def get_user(self, obj):
+        item = obj.user
+        serializer = UserSerializer(item, many=False)
+        return serializer.data
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = Like
         fields = "__all__"
 
     def get_user(self, obj):

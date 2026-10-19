@@ -12,6 +12,12 @@ import {
   COMMENT_GET_REQUEST,
   COMMENT_GET_SUCCESS,
   COMMENT_GET_FAIL,
+  BLOG_LIKE_REQUEST,
+  BLOG_LIKE_SUCCESS,
+  BLOG_LIKE_FAIL,
+  LIKE_GET_REQUEST,
+  LIKE_GET_SUCCESS,
+  LIKE_GET_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListAction = () => async (dispatch) => {
@@ -115,6 +121,58 @@ export const getComments = (slug) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: COMMENT_GET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const addOrRemoveLike = (slug) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: BLOG_LIKE_REQUEST });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const response = await axios.post(
+      `/api/blogs/${slug}/add-like/`,
+      {},
+      config,
+    );
+    dispatch({
+      type: BLOG_LIKE_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BLOG_LIKE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getLikes = (slug) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: LIKE_GET_REQUEST });
+    const response = await axios.get(`/api/blogs/${slug}/likes/`);
+    dispatch({
+      type: LIKE_GET_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: LIKE_GET_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

@@ -12,6 +12,13 @@ import {
   COMMENT_GET_REQUEST,
   COMMENT_GET_SUCCESS,
   COMMENT_GET_FAIL,
+  BLOG_LIKE_REQUEST,
+  BLOG_LIKE_SUCCESS,
+  BLOG_LIKE_FAIL,
+  BLOG_LIKE_RESET,
+  LIKE_GET_REQUEST,
+  LIKE_GET_SUCCESS,
+  LIKE_GET_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListReducer = (state = { blogs: [] }, action) => {
@@ -66,6 +73,33 @@ export const getBlogCommentsReducer = (state = { comments: [] }, action) => {
     case COMMENT_GET_SUCCESS:
       return { loading: false, comments: action.payload };
     case COMMENT_GET_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const addLikeReducer = (state = {}, action) => {
+  switch (action.type) {
+    case BLOG_LIKE_REQUEST:
+      return { loading: true, ...state };
+    case BLOG_LIKE_SUCCESS:
+      return { loading: false, success: true };
+    case BLOG_LIKE_FAIL:
+      return { loading: false, error: action.payload };
+    case BLOG_LIKE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+export const getBlogLikesReducer = (state = { likes: [] }, action) => {
+  switch (action.type) {
+    case LIKE_GET_REQUEST:
+      return { loading: true, ...state };
+    case LIKE_GET_SUCCESS:
+      return { loading: false, likes: action.payload };
+    case LIKE_GET_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;
