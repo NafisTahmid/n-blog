@@ -5,15 +5,23 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useDispatch, useSelector } from "react-redux";
 import { blogListAction } from "../actions/blogActions";
+import { useSearchParams } from "react-router-dom";
+import Paginator from "../components/Paginator";
 
 function HomeScreen() {
   const dispatch = useDispatch();
   const listBlog = useSelector((state) => state.blogList);
-  const { blogs, error, loading } = listBlog;
+  const { blogs, error, loading, page: paginatorPage, pages } = listBlog;
+  const [searchParams] = useSearchParams();
+  let keyword = searchParams.get("keyword");
+  if (keyword == null) {
+    keyword = "";
+  }
+  const page = searchParams.get("page") || 1;
 
   useEffect(() => {
-    dispatch(blogListAction());
-  }, [dispatch]);
+    dispatch(blogListAction(keyword, page));
+  }, [dispatch, keyword, page]);
   return (
     <div>
       <Container className="py-5">
@@ -23,15 +31,23 @@ function HomeScreen() {
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
-          <Row>
-            {blogs.map((blog) => {
-              return (
-                <Col key={blog.id} sm={12} md={6} lg={4} xl={3}>
-                  <Blog blog={blog} />
-                </Col>
-              );
-            })}
-          </Row>
+          <div>
+            <Row>
+              {blogs.map((blog) => {
+                return (
+                  <Col key={blog.id} sm={12} md={6} lg={4} xl={3}>
+                    <Blog blog={blog} />
+                  </Col>
+                );
+              })}
+            </Row>
+            <Paginator
+              page={paginatorPage}
+              pages={pages}
+              keyword={keyword}
+              isAdmin={false}
+            />
+          </div>
         )}
       </Container>
     </div>

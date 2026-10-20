@@ -5,12 +5,26 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from base.serializers import BlogSerializer, CommentSerializer, LikeSerializer
 from base.models import Blog, Comment, Like
 from rest_framework import status
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 @api_view(['GET'])
 def getBlogs(request):
-    blogs = Blog.objects.all()
+    query = request.query_params.get("keyword")
+    page = request.query_params.get("page");
+    if page == None:
+        page = 1
+    page = int(page)
+
+    blogs = Blog.objects.filter(blog_title__icontains=query).order_by("pk")
+    paginator = Paginator(blogs, 8)
+    try:
+        blogs = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
     serializer = BlogSerializer(blogs, many=True)
-    return Response(serializer.data)
+    return Response({"blogs":serializer.data, "page":page, "pages":paginator.num_pages})
 
 
 @api_view(['GET'])

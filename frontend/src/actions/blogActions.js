@@ -20,26 +20,30 @@ import {
   LIKE_GET_FAIL,
 } from "../constants/blogConstants";
 
-export const blogListAction = () => async (dispatch) => {
-  try {
-    dispatch({
-      type: BLOG_LIST_REQUEST,
-    });
-    const response = await axios.get("/api/blogs/");
-    dispatch({
-      type: BLOG_LIST_SUCCESS,
-      payload: response.data,
-    });
-  } catch (error) {
-    dispatch({
-      type: BLOG_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+export const blogListAction =
+  (keyword = "", page = 1) =>
+  async (dispatch) => {
+    try {
+      dispatch({
+        type: BLOG_LIST_REQUEST,
+      });
+      const response = await axios.get(
+        `/api/blogs/?keyword=${keyword}&page=${page}`,
+      );
+      dispatch({
+        type: BLOG_LIST_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: BLOG_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const blogDetailsAction = (slug) => async (dispatch) => {
   try {
