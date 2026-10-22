@@ -17,29 +17,45 @@ export default function ProfileScreen() {
   const navigate = useNavigate();
   const profileUser = useSelector((state) => state.userProfile);
   const updateProfileUser = useSelector((state) => state.userUpdateProfile);
-  const { error, loading, userProfileInfo } = profileUser;
+  const { error, loading, userInfo: userInfoDetails } = profileUser;
+  const loginUser = useSelector((state) => state.userLogin);
+  const { userInfo } = loginUser;
+
   const {
     error: errorUpdate,
     loading: loadingUpdate,
     success: successUpdate,
-    userProfileInfo: userProfileInfoUpdate,
+    userPInfo: userProfileInfoUpdate,
   } = updateProfileUser;
 
+  // 1. Fetch profile data when it's missing
   useEffect(() => {
-    if (!userProfileInfo) {
+    if (!userInfo) {
       navigate("/login");
-    } else {
-      if (!userProfileInfo || !userProfileInfo.email || successUpdate) {
-        dispatch({
-          type: USER_PROFILE_UPDATE_RESET,
-        });
-        dispatch(getProfileData());
-      }
-      setName(userProfileInfo.name);
-      setEmail(userProfileInfo.email);
-      setPassword(userProfileInfo.password);
+      return;
     }
-  }, [dispatch, userProfileInfo, navigate, successUpdate]);
+
+    if (!userInfoDetails) {
+      dispatch(getProfileData());
+    }
+  }, [dispatch, navigate, userInfo, userInfoDetails]);
+
+  // 2. Populate the form when profile data arrives
+  useEffect(() => {
+    if (userInfoDetails) {
+      setName(userInfoDetails.name || "");
+      setEmail(userInfoDetails.email || "");
+      setPassword("");
+    }
+  }, [userInfoDetails]);
+
+  // 3. Reset the update status without fetching again
+  useEffect(() => {
+    if (successUpdate) {
+      dispatch({ type: USER_PROFILE_UPDATE_RESET });
+    }
+  }, [successUpdate, dispatch]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(updateProfile(name, email, password));

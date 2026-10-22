@@ -87,6 +87,7 @@ export const getProfileData = () => async (dispatch, getState) => {
     const {
       userLogin: { userInfo },
     } = getState();
+    console.log("User Info: ", userInfo);
 
     const config = {
       headers: {
@@ -100,7 +101,7 @@ export const getProfileData = () => async (dispatch, getState) => {
       payload: response.data,
     });
 
-    localStorage.setItem("userProfile", JSON.stringify(response.data));
+    localStorage.setItem("userInfo", JSON.stringify(response.data));
   } catch (error) {
     dispatch({
       type: USER_PROFILE_FAIL,

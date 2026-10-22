@@ -33,16 +33,17 @@ const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
-const userProfileFromStorage = localStorage.getItem("userProfile")
-  ? JSON.parse(localStorage.getItem("userProfile"))
-  : null;
+// const userProfileFromStorage = localStorage.getItem("userProfile")
+//   ? JSON.parse(localStorage.getItem("userProfile"))
+//   : null;
+
 const initialState = {
   userLogin: {
     userInfo: userInfoFromStorage,
   },
-  userProfile: {
-    userProfileInfo: userProfileFromStorage,
-  },
+  // userProfile: {
+  //   userProfileInfo: userProfileFromStorage,
+  // },
 };
 const middleware = [thunk];
 const store = createStore(
