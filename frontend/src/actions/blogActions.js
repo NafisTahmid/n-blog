@@ -18,6 +18,9 @@ import {
   LIKE_GET_REQUEST,
   LIKE_GET_SUCCESS,
   LIKE_GET_FAIL,
+  TOP_GET_REQUEST,
+  TOP_GET_SUCCESS,
+  TOP_GET_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListAction =
@@ -177,6 +180,38 @@ export const getLikes = (slug) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: LIKE_GET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getTopBlogs = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: TOP_GET_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const response = await axios.get("/api/blogs/top/", config);
+
+    dispatch({
+      type: TOP_GET_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: TOP_GET_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

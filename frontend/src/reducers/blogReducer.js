@@ -19,6 +19,9 @@ import {
   LIKE_GET_REQUEST,
   LIKE_GET_SUCCESS,
   LIKE_GET_FAIL,
+  TOP_GET_REQUEST,
+  TOP_GET_SUCCESS,
+  TOP_GET_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListReducer = (state = { blogs: [] }, action) => {
@@ -106,6 +109,19 @@ export const getBlogLikesReducer = (state = { likes: [] }, action) => {
       return { loading: false, likes: action.payload };
     case LIKE_GET_FAIL:
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const blogTopReducer = (state = { blogs: [] }, action) => {
+  switch (action.type) {
+    case TOP_GET_REQUEST:
+      return { loading: true, blogs: [] };
+    case TOP_GET_SUCCESS:
+      return { loading: false, blogs: action.payload };
+    case TOP_GET_FAIL:
+      return { loading: false, error: action.payload, blogs: [] };
     default:
       return state;
   }

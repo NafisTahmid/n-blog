@@ -3,6 +3,7 @@ from base.views import blog_views as views
 
 urlpatterns = [
     path('', views.getBlogs),
+    path('top/', views.top_blogs),
     path('<str:slug>/', views.getBlog),
     path('<str:slug>/post-comment/', views.postComment),
     path('<str:slug>/add-like/', views.addLike),

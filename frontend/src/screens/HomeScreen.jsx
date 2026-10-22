@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { blogListAction } from "../actions/blogActions";
 import { useSearchParams } from "react-router-dom";
 import Paginator from "../components/Paginator";
+import BlogCarousel from "../components/BlogCarousel";
 
 function HomeScreen() {
   const dispatch = useDispatch();
@@ -25,13 +26,14 @@ function HomeScreen() {
   return (
     <div>
       <Container className="py-5">
-        <h1>Latest Blogs: </h1>
         {loading ? (
           <Loader />
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
           <div>
+            {!keyword && <BlogCarousel />}
+            <h1>Latest Blogs: </h1>
             <Row>
               {blogs.map((blog) => {
                 return (

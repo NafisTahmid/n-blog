@@ -6,6 +6,7 @@ from base.serializers import BlogSerializer, CommentSerializer, LikeSerializer
 from base.models import Blog, Comment, Like
 from rest_framework import status
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Count
 
 @api_view(['GET'])
 def getBlogs(request):
@@ -81,4 +82,13 @@ def getBlogLikes(request, slug):
     blog = Blog.objects.get(slug=slug)
     blog_likes = Like.objects.filter(blog=blog)
     serializer = LikeSerializer(blog_likes, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def top_blogs(request):
+    top_blogs = Blog.objects.annotate(
+        total_likes=Count("like")
+    ).order_by("-total_likes")[:5]
+    serializer = BlogSerializer(top_blogs, many=True)
     return Response(serializer.data)

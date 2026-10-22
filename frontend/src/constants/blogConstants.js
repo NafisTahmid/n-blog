@@ -22,3 +22,7 @@ export const BLOG_LIKE_RESET = "BLOG_LIKE_RESET";
 export const LIKE_GET_REQUEST = "LIKE_GET_REQUEST";
 export const LIKE_GET_SUCCESS = "LIKE_GET_SUCCESS";
 export const LIKE_GET_FAIL = "LIKE_GET_FAIL";
+
+export const TOP_GET_REQUEST = 'TOP_GET_REQUEST'
+export const TOP_GET_SUCCESS = 'TOP_GET_SUCCESS'
+export const TOP_GET_FAIL = 'TOP_GET_FAIL'
