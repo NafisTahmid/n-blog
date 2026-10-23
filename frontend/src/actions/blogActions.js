@@ -194,16 +194,12 @@ export const getTopBlogs = () => async (dispatch, getState) => {
       type: TOP_GET_REQUEST,
     });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const response = await axios.get("/api/blogs/top/", config);
+    const response = await axios.get("/api/blogs/top/");
 
     dispatch({
       type: TOP_GET_SUCCESS,

@@ -15,6 +15,8 @@ import {
   userRegisterReducer,
   userProfileReducer,
   userUpdateProfileReducer,
+  getUsersReducer,
+  userDeleteReducer,
 } from "./reducers/userReducers";
 
 const reducer = combineReducers({
@@ -29,23 +31,18 @@ const reducer = combineReducers({
   addLike: addLikeReducer,
   getBlogLikes: getBlogLikesReducer,
   blogTop: blogTopReducer,
+  getUsers: getUsersReducer,
+  userDelete: userDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
-// const userProfileFromStorage = localStorage.getItem("userProfile")
-//   ? JSON.parse(localStorage.getItem("userProfile"))
-//   : null;
-
 const initialState = {
   userLogin: {
     userInfo: userInfoFromStorage,
   },
-  // userProfile: {
-  //   userProfileInfo: userProfileFromStorage,
-  // },
 };
 const middleware = [thunk];
 const store = createStore(

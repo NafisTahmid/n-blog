@@ -28,7 +28,7 @@ export default function ProfileScreen() {
     userPInfo: userProfileInfoUpdate,
   } = updateProfileUser;
 
-  // 1. Fetch profile data when it's missing
+ 
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");
@@ -40,7 +40,7 @@ export default function ProfileScreen() {
     }
   }, [dispatch, navigate, userInfo, userInfoDetails]);
 
-  // 2. Populate the form when profile data arrives
+  
   useEffect(() => {
     if (userInfoDetails) {
       setName(userInfoDetails.name || "");
@@ -49,7 +49,7 @@ export default function ProfileScreen() {
     }
   }, [userInfoDetails]);
 
-  // 3. Reset the update status without fetching again
+  
   useEffect(() => {
     if (successUpdate) {
       dispatch({ type: USER_PROFILE_UPDATE_RESET });

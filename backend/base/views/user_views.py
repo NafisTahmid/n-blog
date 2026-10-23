@@ -73,3 +73,11 @@ def updateProfile(request):
     serializer = UserSerializerWithToken(user, many=False)
 
     return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteUser(request, pk):
+    user = User.objects.get(id=pk)
+    user.delete()
+    return Response({'message':'User deleted successfully!!!'}, status=status.HTTP_200_OK)
