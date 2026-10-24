@@ -7,6 +7,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UsersScreen from "./screens/UsersScreen";
+import UpdateUserScreen from "./screens/UpdateUserScreen";
 function App() {
   return (
     <Router>
@@ -18,7 +19,8 @@ function App() {
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
-          <Route path="/admin/users" element={<UsersScreen/>}/>
+          <Route path="/admin/users" element={<UsersScreen />} />
+          <Route path="admin/users/:id" element={<UpdateUserScreen />} />
         </Routes>
       </main>
       <Footer />

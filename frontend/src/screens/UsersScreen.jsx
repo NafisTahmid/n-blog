@@ -5,7 +5,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Button, Container, Table } from "react-bootstrap";
 import { deleteUserAction } from "../actions/userActions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const UsersScreen = () => {
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const UsersScreen = () => {
       navigate("/login");
     }
     dispatch(getUsersAction());
+    
   }, [dispatch, navigate, userInfo]);
 
   useEffect(() => {
@@ -72,9 +73,9 @@ const UsersScreen = () => {
                   )}
                 </td>
                 <td className="text-center">
-                  <Button>
+                  <Link to={`/admin/users/${user.id}`}>
                     <i className="fa fa-pencil" style={{ color: "yellow" }}></i>
-                  </Button>
+                  </Link>
                 </td>
                 <td className="text-center">
                   {deleteLoading ? (
