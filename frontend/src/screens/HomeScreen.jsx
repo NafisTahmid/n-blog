@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import Paginator from "../components/Paginator";
 import BlogCarousel from "../components/BlogCarousel";
 
+
 function HomeScreen() {
   const dispatch = useDispatch();
   const listBlog = useSelector((state) => state.blogList);

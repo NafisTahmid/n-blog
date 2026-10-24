@@ -10,7 +10,7 @@ const Paginator = ({ page, pages, keyword = "", isAdmin = false }) => {
           <LinkContainer
             key={x + 1}
             to={{
-              pathname: isAdmin ? "/admin/productlist" : "/",
+              pathname: isAdmin ? "/admin/blogs" : "/",
               search: `?keyword=${keyword}&page=${x + 1}`,
             }}
           >

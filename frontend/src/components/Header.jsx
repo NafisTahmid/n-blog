@@ -36,7 +36,12 @@ function Header() {
               <NavDropdown title={userInfo.name} id="dropdown">
                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                 {userInfo.is_admin && (
-                  <NavDropdown.Item href="/admin/users">Users</NavDropdown.Item>
+                  <div>
+                    <NavDropdown.Item href="/admin/users">
+                      Users
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/blogs">Blogs</NavDropdown.Item>
+                  </div>
                 )}
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={logoutHandler}>
