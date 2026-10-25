@@ -22,7 +22,9 @@ import {
   TOP_GET_REQUEST,
   TOP_GET_SUCCESS,
   TOP_GET_FAIL,
-  
+  BLOG_DELETE_REQUEST,
+  BLOG_DELETE_SUCCESS,
+  BLOG_DELETE_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListReducer = (state = { blogs: [] }, action) => {
@@ -128,4 +130,15 @@ export const blogTopReducer = (state = { blogs: [] }, action) => {
   }
 };
 
-
+export const blogDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case BLOG_DELETE_REQUEST:
+      return { loading: true, ...state };
+    case BLOG_DELETE_SUCCESS:
+      return { loading: false, success: true };
+    case BLOG_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};

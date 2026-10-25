@@ -28,7 +28,6 @@ const UsersScreen = () => {
       navigate("/login");
     }
     dispatch(getUsersAction());
-    
   }, [dispatch, navigate, userInfo]);
 
   useEffect(() => {
@@ -38,7 +37,9 @@ const UsersScreen = () => {
   }, [dispatch, deleteSuccess]);
 
   const deleteHandler = (id) => {
-    dispatch(deleteUserAction(id));
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      dispatch(deleteUserAction(id));
+    }
   };
   return (
     <Container>

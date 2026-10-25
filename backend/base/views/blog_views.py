@@ -92,3 +92,10 @@ def top_blogs(request):
     ).order_by("-total_likes")[:5]
     serializer = BlogSerializer(top_blogs, many=True)
     return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def delete_blog(request, id):
+    blog = Blog.objects.get(id=id)
+    blog.delete()
+    return Response({'message':'Blog deleted successfully!!!'}, status=status.HTTP_200_OK)

@@ -6,7 +6,10 @@ import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { getUserAction, updateUserAction } from "../actions/userActions";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_GET_REQUEST } from "../constants/userConstants";
+import {
+  USER_GET_REQUEST,
+  USER_UPDATE_REQUEST,
+} from "../constants/userConstants";
 const UpdateUserScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -50,6 +53,9 @@ const UpdateUserScreen = () => {
       });
     }
     if (successUpdate) {
+      dispatch({
+        type: USER_UPDATE_REQUEST,
+      });
       setName(updatedUserUpdate.name);
       setEmail(updatedUserUpdate.email);
       setIsAdmin(updatedUserUpdate.is_admin);

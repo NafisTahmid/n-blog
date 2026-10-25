@@ -21,6 +21,9 @@ import {
   TOP_GET_REQUEST,
   TOP_GET_SUCCESS,
   TOP_GET_FAIL,
+  BLOG_DELETE_REQUEST,
+  BLOG_DELETE_SUCCESS,
+  BLOG_DELETE_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListAction =
@@ -208,6 +211,34 @@ export const getTopBlogs = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: TOP_GET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const blogDeleteAction = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: BLOG_DELETE_REQUEST });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const response = await axios.delete(`/api/blogs/${id}/delete/`, config);
+    dispatch({
+      type: BLOG_DELETE_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BLOG_DELETE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

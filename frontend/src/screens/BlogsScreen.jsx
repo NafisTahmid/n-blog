@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Button, Container, Row, Col, Table } from "react-bootstrap";
-import { blogListAction } from "../actions/blogActions";
+import { blogListAction, blogDeleteAction } from "../actions/blogActions";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import Paginator from "../components/Paginator";
 const BlogsScreen = () => {
@@ -21,8 +21,17 @@ const BlogsScreen = () => {
   const { userInfo } = userLogin;
   const navigate = useNavigate();
 
-  const deleteHandler = () => {
-    console.log("Test");
+  const deleteBlog = useSelector((state) => state.blogDelete);
+  const {
+    error: errorDelete,
+    loading: loadingDelete,
+    success: successDelete,
+  } = deleteBlog;
+
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete this blog")) {
+      dispatch(blogDeleteAction(id));
+    }
   };
 
   useEffect(() => {
@@ -32,6 +41,12 @@ const BlogsScreen = () => {
       dispatch(blogListAction(keyword, page));
     }
   }, [userInfo, navigate, dispatch, keyword, page]);
+
+  useEffect(() => {
+    if (successDelete) {
+      dispatch(blogListAction(keyword, page));
+    }
+  }, [successDelete, dispatch, keyword, page]);
   return (
     <Container>
       {loading ? (
@@ -75,9 +90,18 @@ const BlogsScreen = () => {
                       </Link>
                     </td>
                     <td className="text-center">
-                      <Button onClick={() => deleteHandler(blog.id)}>
-                        <i className="fa fa-trash" style={{ color: "red" }}></i>
-                      </Button>
+                      {loadingDelete ? (
+                        <Loader />
+                      ) : errorDelete ? (
+                        <Message variant="danger">{errorDelete}</Message>
+                      ) : (
+                        <Button onClick={() => deleteHandler(blog.id)}>
+                          <i
+                            className="fa fa-trash"
+                            style={{ color: "red" }}
+                          ></i>
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}

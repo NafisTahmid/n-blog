@@ -35,12 +35,14 @@ function Header() {
             {userInfo ? (
               <NavDropdown title={userInfo.name} id="dropdown">
                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                {userInfo.is_admin && (
+                {userInfo.is_admin == true && (
                   <div>
                     <NavDropdown.Item href="/admin/users">
                       Users
                     </NavDropdown.Item>
-                    <NavDropdown.Item href="/admin/blogs">Blogs</NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/blogs">
+                      Blogs
+                    </NavDropdown.Item>
                   </div>
                 )}
                 <NavDropdown.Divider />
