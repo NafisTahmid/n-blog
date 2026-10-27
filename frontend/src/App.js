@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UsersScreen from "./screens/UsersScreen";
 import UpdateUserScreen from "./screens/UpdateUserScreen";
 import BlogsScreen from "./screens/BlogsScreen";
+import UpdateBlogScreen from "./screens/UpdateBlogScreen";
 function App() {
   return (
     <Router>
@@ -23,6 +24,10 @@ function App() {
           <Route path="/admin/users" element={<UsersScreen />} />
           <Route path="admin/users/:id" element={<UpdateUserScreen />} />
           <Route path="/admin/blogs" element={<BlogsScreen />} />
+          <Route
+            path="/admin/blogs/update/:slug"
+            element={<UpdateBlogScreen />}
+          />
         </Routes>
       </main>
       <Footer />

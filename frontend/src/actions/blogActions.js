@@ -24,6 +24,10 @@ import {
   BLOG_DELETE_REQUEST,
   BLOG_DELETE_SUCCESS,
   BLOG_DELETE_FAIL,
+  BLOG_UPDATE_REQUEST,
+  BLOG_UPDATE_SUCCESS,
+  BLOG_UPDATE_FAIL,
+ 
 } from "../constants/blogConstants";
 
 export const blogListAction =
@@ -246,3 +250,38 @@ export const blogDeleteAction = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+export const blogUpdateAction =
+  (slug, blogData) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: BLOG_UPDATE_REQUEST,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const response = await axios.put(
+        `/api/blogs/${slug}/update/`,
+        blogData,
+        config,
+      );
+      dispatch({
+        type: BLOG_UPDATE_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: BLOG_UPDATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };

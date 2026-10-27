@@ -99,3 +99,29 @@ def delete_blog(request, id):
     blog = Blog.objects.get(id=id)
     blog.delete()
     return Response({'message':'Blog deleted successfully!!!'}, status=status.HTTP_200_OK)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def update_blog_image(request):
+    data = request.data
+    blog = Blog.objects.get(slug=data['blogSlug'])
+    blog.blog_image = request.FILES.get("blogImage")
+    blog.save()
+    return Response({'message':'Blog image updated'}, status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def update_blog(request ,slug):
+    data = request.data
+    user = request.user
+
+    blog = Blog.objects.get(slug=slug)
+    blog.blog_title = data['blogTitle']
+    blog.slug = data['blogSlug']
+    blog.blog_content = data['blogContent']
+    blog.author = user
+    blog.save()
+
+    serializer = BlogSerializer(blog, many=False)
+    return Response(serializer.data)

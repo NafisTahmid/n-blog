@@ -82,7 +82,7 @@ const BlogsScreen = () => {
                     <td className="text-center">{blog.blog_title}</td>
                     <td className="text-center">{blog.slug}</td>
                     <td className="text-center">
-                      <Link to={`/admin/blogs/${blog.slug}`}>
+                      <Link to={`/admin/blogs/update/${blog.slug}`}>
                         <i
                           className="fa fa-pencil"
                           style={{ color: "yellow" }}
