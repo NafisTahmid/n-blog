@@ -7,8 +7,7 @@ class Blog(models.Model):
     blog_title = models.CharField(max_length=250, null=True, blank=True)
     slug = models.SlugField(max_length=250, blank=True, null=True)
     blog_content = models.TextField(blank=True, null=True)
-    # blog_image= models.ImageField(blank=True, null=True)
-    blog_image = CloudinaryField('image')
+    blog_image = CloudinaryField('image', blank=True, null=True)
     publish_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
@@ -29,4 +28,3 @@ class Like(models.Model):
 
     def __str__(self):
         return self.user.email
-

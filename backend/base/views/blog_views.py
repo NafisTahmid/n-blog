@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -104,11 +104,22 @@ def delete_blog(request, id):
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
 def update_blog_image(request):
-    data = request.data
-    blog = Blog.objects.get(slug=data['blogSlug'])
-    blog.blog_image = request.FILES.get("blogImage")
+    slug = request.data.get("blogSlug")
+    image = request.FILES.get("blogImage")
+    if not slug or not image:
+        return Response(
+            {"detail": "Both blogSlug and blogImage are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    blog = get_object_or_404(Blog, slug=slug)
+    blog.blog_image = image
     blog.save()
-    return Response({'message':'Blog image updated'}, status=status.HTTP_200_OK)
+    serializer = BlogSerializer(blog, many=False)
+    return Response(
+        {"blog_image": serializer.data["blog_image"]},
+        status=status.HTTP_200_OK,
+    )
 
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])

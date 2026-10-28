@@ -4,9 +4,15 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class BlogSerializer(serializers.ModelSerializer):
+    blog_image = serializers.SerializerMethodField()
+
     class Meta:
         model = Blog
         fields = "__all__"
+
+    def get_blog_image(self, obj):
+        image = obj.blog_image
+        return image.build_url(secure=True) if image else None
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)

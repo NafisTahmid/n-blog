@@ -15,6 +15,7 @@ const UpdateBlogScreen = () => {
   const [blogContent, setBlogContent] = useState("");
   const [blogImage, setBlogImage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const dispatch = useDispatch();
   const detailsBlog = useSelector((state) => state.blogDetails);
@@ -40,6 +41,7 @@ const UpdateBlogScreen = () => {
       setBlogTitle(blog.blog_title || "");
       setBlogSlug(blog.slug || "");
       setBlogContent(blog.blog_content || "");
+      setBlogImage(blog.blog_image || "");
     }
   }, [blog, slug]);
 
@@ -66,22 +68,31 @@ const UpdateBlogScreen = () => {
   };
 
   const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+
+    setUploading(true);
+    setUploadError("");
     try {
-      setUploading(false);
-      const file = e.target.files[0];
       const formData = new FormData();
       formData.append("blogImage", file);
       formData.append("blogSlug", slug);
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
       const { data } = await axios.put("/api/blogs/upload/", formData, config);
-      setBlogImage(data);
-      setUploading(false);
+      setBlogImage(data.blog_image);
     } catch (error) {
+      setUploadError(
+        error.response?.data?.detail ||
+          error.response?.data?.message ||
+          error.message,
+      );
+    } finally {
       setUploading(false);
     }
   };
@@ -129,9 +140,16 @@ const UpdateBlogScreen = () => {
                 onChange={(e) => setBlogImage(e.target.value)}
               />
               <Form.Label>Choose File</Form.Label>
-              <Form.Control type="file" onChange={uploadFileHandler} />
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={uploadFileHandler}
+                disabled={uploading}
+              />
+              {uploading && <p>Uploading image...</p>}
+              {uploadError && <Message variant="danger">{uploadError}</Message>}
             </Form.Group>
-            <Button type="submit" className="my-2">
+            <Button type="submit" className="my-2" disabled={uploading}>
               Update Blog
             </Button>
           </Form>
