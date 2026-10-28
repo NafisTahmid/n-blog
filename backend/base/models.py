@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 # Create your models here.
 class Blog(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     blog_title = models.CharField(max_length=250, null=True, blank=True)
     slug = models.SlugField(max_length=250, blank=True, null=True)
     blog_content = models.TextField(blank=True, null=True)
-    blog_image= models.ImageField(blank=True, null=True)
+    # blog_image= models.ImageField(blank=True, null=True)
+    blog_image = CloudinaryField('image')
     publish_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
