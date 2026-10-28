@@ -11,6 +11,7 @@ import {
   blogTopReducer,
   blogDeleteReducer,
   blogUpdateReducer,
+  blogCreateReducer,
 } from "./reducers/blogReducer";
 import {
   userLoginReducer,
@@ -26,6 +27,7 @@ import {
 const reducer = combineReducers({
   blogList: blogListReducer,
   blogDetails: blogDetailsReducer,
+  blogCreate: blogCreateReducer,
   blogDelete: blogDeleteReducer,
   blogUpdate: blogUpdateReducer,
   userLogin: userLoginReducer,

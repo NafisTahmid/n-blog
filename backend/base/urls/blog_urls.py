@@ -4,6 +4,7 @@ from base.views import blog_views as views
 urlpatterns = [
     path('top/', views.top_blogs),
     path('', views.getBlogs),
+    path('create/', views.create_blog),
     path('upload/', views.update_blog_image),
     path('<str:slug>/', views.getBlog),
     path('<str:id>/delete/',views.delete_blog),

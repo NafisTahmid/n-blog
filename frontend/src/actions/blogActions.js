@@ -27,7 +27,9 @@ import {
   BLOG_UPDATE_REQUEST,
   BLOG_UPDATE_SUCCESS,
   BLOG_UPDATE_FAIL,
- 
+  BLOG_CREATE_REQUEST,
+  BLOG_CREATE_SUCCESS,
+  BLOG_CREATE_FAIL,
 } from "../constants/blogConstants";
 
 export const blogListAction =
@@ -201,11 +203,6 @@ export const getTopBlogs = () => async (dispatch, getState) => {
       type: TOP_GET_REQUEST,
     });
 
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
     const response = await axios.get("/api/blogs/top/");
 
     dispatch({
@@ -285,3 +282,32 @@ export const blogUpdateAction =
       });
     }
   };
+
+export const blogCreateAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: BLOG_CREATE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const response = await axios.post("/api/blogs/create/", {}, config);
+    dispatch({
+      type: BLOG_CREATE_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BLOG_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};

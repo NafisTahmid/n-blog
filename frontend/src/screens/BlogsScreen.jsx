@@ -3,9 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Button, Container, Row, Col, Table } from "react-bootstrap";
-import { blogListAction, blogDeleteAction } from "../actions/blogActions";
+import {
+  blogListAction,
+  blogDeleteAction,
+  blogCreateAction,
+} from "../actions/blogActions";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import Paginator from "../components/Paginator";
+import { BLOG_CREATE_RESET } from "../constants/blogConstants";
 const BlogsScreen = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
@@ -28,10 +33,21 @@ const BlogsScreen = () => {
     success: successDelete,
   } = deleteBlog;
 
+  const createBlog = useSelector((state) => state.blogCreate);
+  const {
+    blog: blogCreate,
+    error: errorCreate,
+    loading: loadingCreate,
+    success: successCreate,
+  } = createBlog;
+
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure you want to delete this blog")) {
       dispatch(blogDeleteAction(id));
     }
+  };
+  const createHandler = () => {
+    dispatch(blogCreateAction());
   };
 
   useEffect(() => {
@@ -46,7 +62,21 @@ const BlogsScreen = () => {
     if (successDelete) {
       dispatch(blogListAction(keyword, page));
     }
-  }, [successDelete, dispatch, keyword, page]);
+    if (successCreate) {
+      dispatch({
+        type: BLOG_CREATE_RESET,
+      });
+      navigate(`/admin/blogs/update/${blogCreate.slug}`);
+    }
+  }, [
+    successDelete,
+    dispatch,
+    keyword,
+    page,
+    blogCreate,
+    navigate,
+    successCreate,
+  ]);
   return (
     <Container>
       {loading ? (
@@ -60,9 +90,9 @@ const BlogsScreen = () => {
               <h1>All Blogs: </h1>
             </Col>
             <Col lg={2} md={12}>
-              <Button size="lg">
+              <Button size="lg" onClick={createHandler}>
                 {" "}
-                Add Blog <i className="fa-solid fa-plus"></i>
+                Create Blog <i className="fa-solid fa-plus"></i>
               </Button>
             </Col>
           </Row>
@@ -113,6 +143,8 @@ const BlogsScreen = () => {
               keyword={keyword}
               isAdmin={false}
             />
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant="danger">{errorCreate}</Message>}
           </div>
         </>
       )}

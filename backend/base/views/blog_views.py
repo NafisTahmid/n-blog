@@ -125,3 +125,17 @@ def update_blog(request ,slug):
 
     serializer = BlogSerializer(blog, many=False)
     return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+def create_blog(request):
+    author = request.user
+    blog = Blog.objects.create(
+        author=author,
+        blog_title="Sample title",
+        slug="sample_slug",
+        blog_content="sample_content",
+    )
+    serializer = BlogSerializer(blog, many=False)
+    return Response(serializer.data)
