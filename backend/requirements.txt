@@ -9,3 +9,5 @@ PyJWT==2.15.1
 python-dotenv==1.2.4
 sqlparse==0.6.0
 tzdata==2026.5
+cloudinary
+django-cloudinary-storage
